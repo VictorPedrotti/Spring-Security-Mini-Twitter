@@ -2,6 +2,9 @@ package estudos.java.spring.security.entities;
 
 import java.util.Set;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import estudos.java.spring.security.dto.LoginRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -68,6 +71,11 @@ public class User {
     this.role = role;
   }
 
-    
-  
+  public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder) {
+    return passwordEncoder.matches(loginRequest.password(), this.password);
+  }
+
+  public User() {
+  }
+
 }
