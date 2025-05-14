@@ -1,6 +1,7 @@
 package estudos.java.spring.security.controller;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -42,12 +43,18 @@ public class TokenController {
 
     var now = Instant.now();
     var expiresIn = 300L;
+
+    var scopes = user.get().getRole()
+                .stream()
+                .map(role -> role.getName().toUpperCase())
+                .collect(Collectors.joining(" "));
     
     var claims = JwtClaimsSet.builder()
           .issuer("mybackend")
           .subject(user.get().getUserId().toString())
           .issuedAt(now)
           .expiresAt(now.plusSeconds(expiresIn))
+          .claim("scope", scopes)
           .build();
 
     var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
